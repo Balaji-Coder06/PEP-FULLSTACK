@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Document</title>
+</head>
+
+<body>
+    <input style="height: 50px; 
+                  width: 200px; 
+                  display: block; 
+                  margin: 200px auto; 
+                  font-size: 30px; 
+                  font-family: 'Times New Roman'; 
+                  color: red; 
+                  background-color: aqua; 
+                  font-weight: bold;" 
+                  type="button" 
+                  value="Click me" 
+                  onclick="display()">
+    <script>
+        function display() {
+            var x=prompt("Enter the no till u want: ")
+            var sum=0;
+            for(var i=1;i<=x;i++){
+                if(i%2==0) sum+=i
+            }
+            document.write("Sum of even no is : "+sum+"<br>");
+        }
+    </script>
+</body>
+
+</html>

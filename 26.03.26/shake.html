@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shake on Hover</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+
+        .container:hover {
+            animation: shake 0.5s ease-in-out infinite;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px) rotate(-1deg);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px) rotate(1deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="download.png" alt="no image">
+    </div>
+</body>
+</html>

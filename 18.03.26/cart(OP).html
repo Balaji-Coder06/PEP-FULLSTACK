@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping Cart</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --surface: #18181c;
+    --surface2: #222228;
+    --border: #2e2e38;
+    --accent: #f5c842;
+    --accent2: #e8563a;
+    --text: #f0eeea;
+    --muted: #7a7a8a;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 16px 60px;
+  }
+  header { text-align: center; margin-bottom: 36px; }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--accent);
+  }
+  header p { color: var(--muted); font-size: 0.88rem; margin-top: 6px; font-weight: 300; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 580px;
+    margin: 0 auto 18px;
+  }
+  .card-title {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .input-label-group { display: flex; flex-direction: column; gap: 5px; }
+  .input-label-group label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  input[type="text"], input[type="number"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 11px 13px;
+    width: 100%;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  input::placeholder { color: var(--muted); }
+  input:focus { border-color: var(--accent); }
+
+  /* Quantity stepper (add form) */
+  .qty-stepper {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    height: 42px;
+    transition: border-color 0.2s;
+  }
+  .qty-stepper:focus-within { border-color: var(--accent); }
+  .qty-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 700;
+    width: 36px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover { background: rgba(245,200,66,0.1); }
+  .qty-display {
+    flex: 1;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    user-select: none;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 18px;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--accent); color: #111; width: 100%; }
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+    padding: 9px 14px;
+  }
+
+  /* Cart list */
+  #cartList { list-style: none; max-width: 580px; margin: 0 auto; }
+  #cartList li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 12px;
+    animation: fadeSlide 0.22s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .item-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .item-name { font-weight: 500; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { color: var(--muted); font-size: 0.76rem; }
+  .item-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  /* Inline qty stepper inside cart row */
+  .inline-stepper {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 32px;
+  }
+  .inline-stepper button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 28px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s;
+  }
+  .inline-stepper button:hover { background: rgba(245,200,66,0.12); }
+  .inline-qty { font-size: 0.85rem; font-weight: 600; color: var(--text); width: 24px; text-align: center; user-select: none; }
+
+  .item-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--accent);
+    white-space: nowrap;
+    min-width: 72px;
+    text-align: right;
+  }
+  .remove-btn {
+    background: transparent;
+    border: 1px solid #3a2020;
+    color: var(--accent2);
+    border-radius: 7px;
+    padding: 5px 9px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    line-height: 1;
+  }
+  .remove-btn:hover { background: var(--accent2); color: #fff; }
+
+  /* Summary */
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    max-width: 580px;
+    margin: 0 auto 12px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.86rem;
+    color: var(--muted);
+    padding: 5px 0;
+  }
+  .summary-row.final {
+    border-top: 1px solid var(--border);
+    margin-top: 10px;
+    padding-top: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .summary-row.final span:last-child {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+  .empty-state { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 30px 0; max-width: 580px; margin: 0 auto; }
+  .empty-state .emoji { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+
+  @media (max-width: 480px) {
+    .input-grid { grid-template-columns: 1fr 1fr; }
+    .input-grid .input-label-group:first-child { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛒 Cart</h1>
+  <p>Add items, adjust quantities, see your total.</p>
+</header>
+
+<!-- Add Item Card -->
+<div class="card">
+  <div class="card-title">Add Item</div>
+  <div class="input-grid">
+    <div class="input-label-group">
+      <label>Item Name</label>
+      <input type="text" id="name" placeholder="e.g. Mango">
+    </div>
+    <div class="input-label-group">
+      <label>Price (₹)</label>
+      <input type="number" id="price" placeholder="0" min="0" step="0.01">
+    </div>
+    <div class="input-label-group">
+      <label>Quantity</label>
+      <div class="qty-stepper">
+        <button class="qty-btn" onclick="changeInputQty(-1)">−</button>
+        <span class="qty-display" id="qtyDisplay">1</span>
+        <button class="qty-btn" onclick="changeInputQty(1)">+</button>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-primary" onclick="addItem()">＋ Add to Cart</button>
+</div>
+
+<!-- Cart List -->
+<ul id="cartList"></ul>
+
+<!-- Summary -->
+<div class="summary-card" id="summaryCard" style="display:none">
+  <div class="summary-row"><span>Items</span><span id="itemCountVal">0</span></div>
+  <div class="summary-row"><span>Subtotal</span><span id="subtotalVal">₹0</span></div>
+  <div class="summary-row final"><span>Total</span><span id="totalVal">₹0</span></div>
+  <button class="btn btn-ghost" style="width:100%;margin-top:14px" onclick="clearCart()">🗑 Clear Cart</button>
+</div>
+
+<script>
+  let cart = [];
+  let inputQty = 1;
+
+  function changeInputQty(delta) {
+    inputQty = Math.max(1, inputQty + delta);
+    document.getElementById('qtyDisplay').textContent = inputQty;
+  }
+
+  function addItem() {
+    const name = document.getElementById('name').value.trim();
+    const price = parseFloat(document.getElementById('price').value);
+
+    if (!name || isNaN(price) || price < 0) {
+      alert('Please enter a valid item name and price.');
+      return;
+    }
+
+    // Merge if same item already in cart
+    const existing = cart.find(i => i.name.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      existing.qty += inputQty;
+    } else {
+      cart.push({ name, price, qty: inputQty });
+    }
+
+    document.getElementById('name').value = '';
+    document.getElementById('price').value = '';
+    inputQty = 1;
+    document.getElementById('qtyDisplay').textContent = 1;
+
+    renderCart();
+  }
+
+  function changeItemQty(index, delta) {
+    cart[index].qty = Math.max(1, cart[index].qty + delta);
+    renderCart();
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    renderCart();
+  }
+
+  function clearCart() {
+    if (!cart.length) return;
+    if (confirm('Clear the entire cart?')) { cart = []; renderCart(); }
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cartList');
+    const summaryCard = document.getElementById('summaryCard');
+    list.innerHTML = '';
+
+    if (!cart.length) {
+      list.innerHTML = `<div class="empty-state"><span class="emoji">🛒</span>Your cart is empty.</div>`;
+      summaryCard.style.display = 'none';
+      return;
+    }
+
+    let subtotal = 0, totalItems = 0;
+
+    cart.forEach((item, index) => {
+      const lineTotal = item.price * item.qty;
+      subtotal += lineTotal;
+      totalItems += item.qty;
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <div class="item-info">
+          <span class="item-name">${item.name}</span>
+          <span class="item-meta">₹${item.price.toFixed(2)} × ${item.qty}</span>
+        </div>
+        <div class="item-right">
+          <div class="inline-stepper">
+            <button onclick="changeItemQty(${index}, -1)">−</button>
+            <span class="inline-qty">${item.qty}</span>
+            <button onclick="changeItemQty(${index}, 1)">+</button>
+          </div>
+          <span class="item-price">₹${lineTotal.toFixed(2)}</span>
+          <button class="remove-btn" onclick="removeItem(${index})">✕</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+
+    document.getElementById('itemCountVal').textContent = totalItems + ' item' + (totalItems !== 1 ? 's' : '');
+    document.getElementById('subtotalVal').textContent = '₹' + subtotal.toFixed(2);
+    document.getElementById('totalVal').textContent = '₹' + subtotal.toFixed(2);
+    summaryCard.style.display = 'block';
+  }
+</script>
+</body>
+</html>
