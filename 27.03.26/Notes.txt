@@ -1,0 +1,42 @@
+- Html DOM Tree
+-------------------------------------------------------------------------------
+- non method properties of node instances
+1. nodeType
+2. nodeName
+3. parentNode
+4. childNodes
+5. previousSibling
+6. nextSibling
+7. attributes
+-------------------------------------------------------------------------------
+- method properties of node instances
+1. hasAttributes()
+2. hasChildNodes()
+3. appendChild(Node)
+4. insertBefore(Node, Node)
+5. removeChid(Node)
+6. replaceChild(Node, Node)
+first node-what to inserted, second node-where to insert
+-------------------------------------------------------------------------------
+1. Node.ELEMENT_NODE            - ELEMENT
+2. Node.ATTRIBUTE_NODE          - ATTR
+3. Node.TEXT_NODE               - TEXT
+4. Node.COMMENT_NODE            - COMMENT
+5. Node.DOCUMENT_NODE           - DOCUMENT
+6. Node.DOCUMENT_TYOE_NODE      - DOCUMENT nodeType
+-------------------------------------------------------------------------------
+var node=document.createElement("p");
+var textnode=document.createTextNode("PARAGRAPH 2");
+node.appendchild(textnode);
+
+x.appendChild(node);
+document.write(x.lastChild.nodeName);
+
+var p2=x.getElementsByTagName("p"); - return a array of "p" elements
+
+x.insertBefore(newItem, p2[1]);
+-------------------------------------------------------------------------------
+- DOM manipulation
+
+- Event Propagation
+
