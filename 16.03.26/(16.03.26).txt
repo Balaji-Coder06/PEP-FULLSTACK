@@ -1,9 +1,0 @@
-1. https://www.google.com/search?q=ecmascript&oq=ecmascript&gs_lcrp=EgZjaHJvbWUyDAgAEEUYORixAxiABDIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABDIHCAkQABiABNIBCDMyMDdqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8
-
-2. https://github.com/tc39/ecma262
-
-3. https://www.authenta.ai/
-
-4. https://www.google.com/search?q=v8+engine+javascript&newwindow=1&sca_esv=d351541170fbfe96&sxsrf=ANbL-n7SLhMNtSOjC1eNxyrhaIwhgz0qJw%3A1773635011212&ei=w4W3adPSDO6pvr0P9r2l6Qo&biw=1600&bih=881&oq=v8+engine&gs_lp=Egxnd3Mtd2l6LXNlcnAiCXY4IGVuZ2luZSoCCAAyBBAAGEcyBBAAGEcyBBAAGEcyBBAAGEcyBBAAGEcyBBAAGEcyBBAAGEcyBBAAGEdIqA5QAFgAcAB4ApABAJgBAKABAKoBALgBAcgBAJgCAaACA5gDAOIDBRIBMSBAiAYBkAYIkgcBMaAHALIHALgHAMIHAzAuMcgHAoAIAA&sclient=gws-wiz-serp
-
-5. 
