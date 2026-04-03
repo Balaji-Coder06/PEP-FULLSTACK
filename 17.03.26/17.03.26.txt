@@ -1,0 +1,6 @@
+1. Conditional Statements in JS
+2. Logical Statements in JS
+3. Functions in JS
+4. BMI example
+5. Hoisting in java
+6. 

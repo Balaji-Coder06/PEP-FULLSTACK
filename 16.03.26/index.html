@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hii Bala here !!!</h1>
+    <script> 
+        console.log("Hiii, There!");
+        document.body.style.backgroundColor = "lime"; 
+        var name = "balaji";
+        console.log("My name is " + name);
+        var age = 19;
+        console.log("I am " + age + " years old.");
+        setTimeout(function() {
+            document.body.style.backgroundColor = "skyblue";
+            document.querySelector("h1").textContent = "Background color changed!";
+        }, 2000);
+    </script>
+</body>
+</html>

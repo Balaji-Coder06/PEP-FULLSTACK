@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @font-face {
+            font-family: digital;
+            src: url("digi.ttf");
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe29f, #ffa99f, #9ecfff);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 60px;
+        }
+
+        input,button{
+            display: block;
+            margin: auto;
+            font-size: 18px;
+            padding: 8px;
+        }
+
+        p {
+            text-align: center;
+            margin: 0;
+            font-family: digital;
+            font-size: 150px;
+            color: rgb(255, 0, 0);
+            display: block;
+            width: fit-content;
+            margin: auto;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: black;
+            text-shadow:
+                0 0 10px #df1d1d,
+                0 0 15px #ec2929;
+                
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Time</h1>
+    <p id="clock"></p>
+    <h1>Count-Down</h1>
+    <input type="number" id="inputTime" placeholder="Enter seconds"><br>
+    <button onclick="startCountdown()">Start</button><br>
+    <p id="countdown"></p>
+    <script>
+        function clockff() {
+            let obj = new Date();
+            document.getElementById("clock").innerHTML = obj.toLocaleTimeString();
+        }
+        setInterval(clockff, 500);
+
+        function startCountdown() {
+            let t = document.getElementById("inputTime").value;
+            let x = setInterval(function () {
+                if (t <= 0) {
+                    clearInterval(x);
+                    document.getElementById("countdown").innerHTML = "Time's up!";
+                } else {
+                    document.getElementById("countdown").innerHTML = t;
+                    t--;
+                }
+            }, 1000);
+        }
+
+        let obj = { dob: new Date() };
+        let monthIndex = obj.date.getMonth();
+        switch (monthIndex) {
+            case 0: monthName = console.log("January");; break;
+            case 1: monthName = console.log("February");; break;
+            case 2: monthName = console.log("March");; break;
+            case 3: monthName = console.log("April");; break;
+            case 4: monthName = console.log("May");; break;
+            case 5: monthName = console.log("June");; break;
+            case 6: monthName = console.log("July");; break;
+            case 7: monthName = console.log("August");; break;
+            case 8: monthName = console.log("September");; break;
+            case 9: monthName = console.log("October");; break;
+            case 10: monthName = console.log("November");; break;
+            case 11: monthName = console.log("December");; break;
+        }
+
+        let myString = "Fullstack is our favourite domain";
+        console.log(myString);
+        console.log(myString.slice(1, 5));
+    </script>
+</body>
+
+</html>

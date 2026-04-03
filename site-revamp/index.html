@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus Connect — College Forum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg-2: #13161e;
+  --bg-3: #1a1e28;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.14);
+  --text: #e8eaf0;
+  --text-muted: #6b7280;
+  --text-dim: #9ca3af;
+  --accent: #6c63ff;
+  --accent-2: #4ecdc4;
+  --accent-3: #ff6b6b;
+  --accent-4: #ffd93d;
+  --accent-5: #a8edea;
+  --green: #22c55e;
+  --orange: #f97316;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ───── SCROLLBAR ───── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 3px; }
+
+/* ───── LAYOUT ───── */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ───── HEADER ───── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,15,20,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+.header-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; gap: 16px;
+  height: 60px;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; text-decoration: none; flex-shrink: 0;
+}
+.logo-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.logo-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 800; font-size: 18px;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.logo-text span { color: var(--accent); }
+
+.search-bar {
+  flex: 1; max-width: 440px;
+  position: relative;
+}
+.search-bar input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px 8px 36px;
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-bar input::placeholder { color: var(--text-muted); }
+.search-bar input:focus { border-color: var(--accent); }
+.search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 14px; pointer-events: none;
+}
+
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.btn {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px; font-weight: 500;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all 0.18s; border: none; outline: none;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-ghost {
+  background: transparent; color: var(--text-dim);
+  padding: 7px 14px; border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg-2); color: var(--text); border-color: var(--border-hover); }
+.btn-primary {
+  background: var(--accent); color: #fff;
+  padding: 7px 16px;
+}
+.btn-primary:hover { background: #7c74ff; transform: translateY(-1px); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: Georgia, 'Times New Roman', serif; flex-shrink: 0;
+}
+
+/* ───── MAIN CONTENT ───── */
+.main { max-width: 1280px; margin: 0 auto; padding: 32px 24px; width: 100%; flex: 1; }
+
+/* ───── VIEWS ───── */
+.view { display: none; animation: fadeUp 0.25s ease; }
+.view.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ───── HOME VIEW ───── */
+.home-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
+
+/* ───── HERO BANNER ───── */
+.hero {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 48px;
+  margin-bottom: 28px;
+  position: relative; overflow: hidden;
+  grid-column: 1 / -1;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -40px; left: 200px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(78,205,196,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(108,99,255,0.12);
+  border: 1px solid rgba(108,99,255,0.25);
+  border-radius: 100px; padding: 4px 12px;
+  font-size: 12px; font-weight: 500; color: var(--accent);
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 36px; font-weight: 800;
+  line-height: 1.15; letter-spacing: -1px;
+  color: var(--text); margin-bottom: 12px;
+}
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p { color: var(--text-dim); font-size: 15px; max-width: 520px; margin-bottom: 24px; }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.hero-stats {
+  position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.stat-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 18px;
+  text-align: right;
+}
+.stat-num {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px; font-weight: 700; color: var(--text);
+}
+.stat-label { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+/* ───── SECTION HEADER ───── */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
+}
+.section-link {
+  font-size: 13px; color: var(--accent); cursor: pointer;
+  text-decoration: none; font-weight: 500;
+}
+.section-link:hover { text-decoration: underline; }
+
+/* ───── CATEGORIES ───── */
+.categories-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px; margin-bottom: 28px;
+}
+.category-card {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.category-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-3); transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.cat-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.cat-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700; color: var(--text);
+}
+.cat-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.cat-count { font-size: 11px; color: var(--text-muted); font-family: Georgia, 'Times New Roman', serif; }
+
+/* ───── THREAD LIST ───── */
+.threads-list { display: flex; flex-direction: column; gap: 2px; }
+.thread-item {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px 18px;
+  cursor: pointer; transition: all 0.18s;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.thread-item:hover {
+  border-color: var(--border-hover); background: var(--bg-3);
+}
+.thread-votes {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-width: 40px; padding-top: 2px;
+}
+.vote-btn {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 3px; border-radius: 4px; font-size: 12px;
+  transition: all 0.15s; line-height: 1;
+}
+.vote-btn:hover { color: var(--accent); background: rgba(108,99,255,0.1); }
+.vote-btn.up.active { color: var(--green); }
+.vote-btn.down.active { color: var(--accent-3); }
+.vote-count {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px; font-weight: 500; color: var(--text-dim);
+}
+.thread-body { flex: 1; min-width: 0; }
+.thread-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.tag {
+  font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 100px;
+  background: rgba(108,99,255,0.12); color: var(--accent);
+  border: 1px solid rgba(108,99,255,0.2);
+  white-space: nowrap;
+}
+.tag.green { background: rgba(34,197,94,0.1); color: var(--green); border-color: rgba(34,197,94,0.2); }
+.tag.orange { background: rgba(249,115,22,0.1); color: var(--orange); border-color: rgba(249,115,22,0.2); }
+.tag.teal { background: rgba(78,205,196,0.1); color: var(--accent-2); border-color: rgba(78,205,196,0.2); }
+.tag.red { background: rgba(255,107,107,0.1); color: var(--accent-3); border-color: rgba(255,107,107,0.2); }
+.tag.yellow { background: rgba(255,217,61,0.1); color: var(--accent-4); border-color: rgba(255,217,61,0.2); }
+.thread-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--text); margin-bottom: 6px;
+  line-height: 1.35;
+}
+.thread-excerpt { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.thread-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.meta-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
+.meta-avatar { width: 18px; height: 18px; border-radius: 50%; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.meta-dot { color: var(--border-hover); }
+
+/* ───── SIDEBAR ───── */
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+.sidebar-card {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px;
+}
+.sidebar-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.leaderboard-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.leaderboard-item:last-child { border-bottom: none; padding-bottom: 0; }
+.rank {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12px; color: var(--text-muted); width: 16px; text-align: right;
+}
+.lb-name { font-size: 13px; font-weight: 500; flex: 1; }
+.lb-points { font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: var(--accent); }
+.trending-tag {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.trending-tag:last-child { border-bottom: none; padding-bottom: 0; }
+.trending-tag:hover .trend-name { color: var(--accent); }
+.trend-name { font-size: 13px; color: var(--text-dim); transition: color 0.15s; }
+.trend-count { font-size: 11px; color: var(--text-muted); font-family: Georgia, 'Times New Roman', serif; }
+
+/* ───── TABS ───── */
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; width: fit-content; }
+.tab {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px; font-weight: 500;
+  padding: 7px 16px; border-radius: 6px;
+  cursor: pointer; border: none; background: transparent;
+  color: var(--text-muted); transition: all 0.18s;
+}
+.tab.active { background: var(--accent); color: #fff; }
+.tab:not(.active):hover { color: var(--text); background: var(--bg-3); }
+
+/* ───── CATEGORY VIEW ───── */
+.cat-view-header {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px 28px;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 20px;
+}
+.cat-view-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.cat-view-info h2 {
+  font-family: Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 800;
+  letter-spacing: -0.5px; margin-bottom: 4px;
+}
+.cat-view-info p { font-size: 14px; color: var(--text-dim); }
+.cat-view-stats { margin-left: auto; display: flex; gap: 24px; }
+.cstat { text-align: center; }
+.cstat-num { font-family: Georgia, 'Times New Roman', serif; font-size: 20px; font-weight: 700; }
+.cstat-label { font-size: 11px; color: var(--text-muted); }
+
+/* ───── THREAD DETAIL ───── */
+.thread-detail-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+.thread-question {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 32px; margin-bottom: 20px;
+}
+.question-header { margin-bottom: 16px; }
+.question-title {
+  font-family: Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 800;
+  letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 12px;
+}
+.question-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.question-body { font-size: 14.5px; line-height: 1.75; color: var(--text-dim); margin-bottom: 20px; }
+.question-body p { margin-bottom: 12px; }
+.question-body code {
+  background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 6px;
+  font-family: Georgia, 'Times New Roman', serif; font-size: 13px; color: var(--accent-2);
+}
+.question-body pre {
+  background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin: 12px 0;
+  overflow-x: auto;
+}
+.question-body pre code {
+  background: none; border: none; padding: 0;
+  font-size: 13px; line-height: 1.65; color: var(--text-dim);
+}
+.question-actions { display: flex; gap: 8px; align-items: center; padding-top: 16px; border-top: 1px solid var(--border); }
+.action-btn {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 13px; color: var(--text-muted);
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 12px; cursor: pointer;
+  transition: all 0.15s; font-family: Georgia, 'Times New Roman', serif;
+}
+.action-btn:hover { color: var(--text); border-color: var(--border-hover); background: var(--bg-3); }
+.action-btn.upvote:hover, .action-btn.upvote.active { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.05); }
+
+/* ───── REPLIES ───── */
+.replies-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.replies-count {
+  font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-weight: 700;
+}
+.reply-card {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 12px;
+  transition: border-color 0.15s;
+}
+.reply-card.accepted {
+  border-color: rgba(34,197,94,0.35);
+  background: linear-gradient(135deg, rgba(34,197,94,0.04) 0%, var(--bg-2) 100%);
+}
+.reply-card:hover { border-color: var(--border-hover); }
+.reply-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.accepted-badge {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; color: var(--green);
+  background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 100px; padding: 3px 10px; margin-left: auto;
+}
+.reply-body { font-size: 14px; line-height: 1.75; color: var(--text-dim); margin-bottom: 14px; }
+.reply-actions { display: flex; gap: 6px; }
+
+/* ───── REPLY EDITOR ───── */
+.reply-editor {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 24px; margin-top: 20px;
+}
+.editor-title {
+  font-family: Georgia, 'Times New Roman', serif; font-size: 14px; font-weight: 700;
+  margin-bottom: 12px;
+}
+.editor-toolbar {
+  display: flex; gap: 4px; margin-bottom: 8px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.toolbar-btn {
+  background: none; border: 1px solid transparent; color: var(--text-muted);
+  border-radius: 5px; padding: 4px 8px; cursor: pointer; font-size: 12px;
+  font-family: Georgia, 'Times New Roman', serif; transition: all 0.15s;
+}
+.toolbar-btn:hover { background: var(--bg-3); border-color: var(--border); color: var(--text); }
+textarea.editor-input {
+  width: 100%; background: transparent; border: none; outline: none;
+  color: var(--text); font-family: Georgia, 'Times New Roman', serif; font-size: 14px;
+  line-height: 1.7; resize: vertical; min-height: 120px;
+}
+textarea.editor-input::placeholder { color: var(--text-muted); }
+.editor-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.editor-hint { font-size: 12px; color: var(--text-muted); }
+
+/* ───── NEW THREAD MODAL ───── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 16px; width: 100%; max-width: 620px;
+  padding: 28px 32px;
+  transform: scale(0.96) translateY(8px);
+  transition: transform 0.2s;
+}
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.modal-title { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: 800; }
+.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px; line-height: 1; padding: 4px; border-radius: 4px; }
+.modal-close:hover { color: var(--text); background: var(--bg-3); }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-dim); margin-bottom: 6px; }
+.form-input {
+  width: 100%; background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  color: var(--text); font-family: Georgia, 'Times New Roman', serif; font-size: 14px; outline: none;
+  transition: border-color 0.18s;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-input::placeholder { color: var(--text-muted); }
+.form-select {
+  width: 100%; background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  color: var(--text); font-family: Georgia, 'Times New Roman', serif; font-size: 14px; outline: none;
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+.form-select:focus { border-color: var(--accent); }
+.form-textarea {
+  width: 100%; background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  color: var(--text); font-family: Georgia, 'Times New Roman', serif; font-size: 14px; outline: none;
+  resize: vertical; min-height: 120px; line-height: 1.65;
+  transition: border-color 0.18s;
+}
+.form-textarea:focus { border-color: var(--accent); }
+.form-textarea::placeholder { color: var(--text-muted); }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+/* ───── BREADCRUMB ───── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.breadcrumb a { color: var(--text-muted); cursor: pointer; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--border-hover); }
+
+/* ───── TOAST ───── */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--bg-3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 18px;
+  display: flex; align-items: center; gap: 10px; font-size: 13px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  animation: slideIn 0.25s ease;
+}
+.toast.success { border-color: rgba(34,197,94,0.3); }
+.toast-icon { font-size: 15px; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ───── EMPTY STATE ───── */
+.empty-state { text-align: center; padding: 48px 24px; }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.empty-text { font-size: 14px; color: var(--text-muted); }
+
+/* ───── PROFILE VIEW ───── */
+.profile-banner {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px 32px;
+  display: flex; align-items: center; gap: 24px; margin-bottom: 20px;
+}
+.profile-avatar-lg {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 700; font-family: Georgia, 'Times New Roman', serif;
+}
+.profile-name { font-family: Georgia, 'Times New Roman', serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.profile-handle { font-size: 14px; color: var(--text-muted); margin-bottom: 10px; }
+.profile-badges { display: flex; gap: 8px; }
+.badge {
+  font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 600;
+  background: rgba(108,99,255,0.15); color: var(--accent); border: 1px solid rgba(108,99,255,0.25);
+}
+.badge.gold { background: rgba(255,217,61,0.15); color: var(--accent-4); border-color: rgba(255,217,61,0.25); }
+.profile-stats { margin-left: auto; display: flex; gap: 28px; }
+.pstat { text-align: center; }
+.pstat-num { font-family: Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 700; }
+.pstat-label { font-size: 11px; color: var(--text-muted); }
+
+/* ───── NOTIFICATION DOT ───── */
+.notif-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-3); position: absolute; top: -2px; right: -2px;
+}
+.notif-wrap { position: relative; }
+
+/* ───── SEARCH VIEW ───── */
+.search-results-header { margin-bottom: 20px; }
+.search-results-header h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 20px; font-weight: 700; }
+.search-results-header p { font-size: 14px; color: var(--text-muted); }
+
+/* ───── MOBILE ADJUSTMENTS ───── */
+@media (max-width: 900px) {
+  .home-layout { grid-template-columns: 1fr; }
+  .hero { padding: 28px; }
+  .hero-stats { display: none; }
+  .hero h1 { font-size: 26px; }
+  .thread-detail-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .profile-stats { display: none; }
+  .profile-banner { flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  .categories-grid { grid-template-columns: 1fr 1fr; }
+  .main { padding: 16px; }
+  .logo-text { display: none; }
+  header { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" onclick="navigate('home')">
+      <div class="logo-icon">🎓</div>
+      <span class="logo-text">Campus<span>Connect</span></span>
+    </a>
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search threads, topics, tags…" oninput="handleSearch(this.value)" onfocus="handleSearchFocus()">
+    </div>
+    <div class="header-actions">
+      <div class="notif-wrap">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('3 new replies to your threads', '🔔')">🔔</button>
+        <div class="notif-dot"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openNewThread()">+ New Thread</button>
+      <div class="avatar" onclick="navigate('profile')" title="My Profile">B</div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HOME VIEW -->
+  <div class="view active" id="view-home">
+    <div class="home-layout">
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-label">✦ Your Campus Community</div>
+        <h1>Where <em>students</em><br>think together.</h1>
+        <p>Ask questions, share resources, discuss placements, and connect with peers across every department — all in one structured forum.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="openNewThread()">+ Start a Thread</button>
+          <button class="btn btn-ghost" onclick="navigate('category','academics')">Browse Academics</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-pill">
+            <div class="stat-num" id="statThreads">247</div>
+            <div class="stat-label">Active Threads</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-num">1,842</div>
+            <div class="stat-label">Students</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-num">98%</div>
+            <div class="stat-label">Questions Answered</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN COLUMN -->
+      <div>
+        <!-- CATEGORIES -->
+        <div class="section-header">
+          <div class="section-title">Browse Categories</div>
+        </div>
+        <div class="categories-grid" id="categoriesGrid"></div>
+
+        <!-- RECENT THREADS -->
+        <div class="section-header">
+          <div class="section-title">Recent Discussions</div>
+          <div class="tabs" style="margin-bottom:0">
+            <button class="tab active" onclick="filterThreads('hot',this)">🔥 Hot</button>
+            <button class="tab" onclick="filterThreads('new',this)">✨ New</button>
+            <button class="tab" onclick="filterThreads('unanswered',this)">❓ Unanswered</button>
+          </div>
+        </div>
+        <div class="threads-list" id="homeThreads"></div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-title">🏆 Top Contributors</div>
+          <div id="leaderboard"></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-title">🔥 Trending Tags</div>
+          <div id="trendingTags"></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-title">📢 Campus Announcements</div>
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.65">
+            <p style="margin-bottom:8px">📅 <strong>Hackathon 2025</strong> registrations open. Last date: Apr 15</p>
+            <p style="margin-bottom:8px">📝 Mid-sem schedule posted in Academics.</p>
+            <p>🎓 Placement drive — TCS, Infosys next week.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY VIEW -->
+  <div class="view" id="view-category">
+    <div class="breadcrumb">
+      <a onclick="navigate('home')">Home</a>
+      <span>›</span>
+      <span id="catBreadName">Category</span>
+    </div>
+    <div class="cat-view-header">
+      <div class="cat-view-icon" id="catViewIcon"></div>
+      <div class="cat-view-info">
+        <h2 id="catViewName"></h2>
+        <p id="catViewDesc"></p>
+      </div>
+      <div class="cat-view-stats">
+        <div class="cstat">
+          <div class="cstat-num" id="catViewThreadCount"></div>
+          <div class="cstat-label">Threads</div>
+        </div>
+        <div class="cstat">
+          <div class="cstat-num" id="catViewReplyCount"></div>
+          <div class="cstat-label">Replies</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+      <button class="btn btn-primary btn-sm" onclick="openNewThread()">+ New Thread</button>
+    </div>
+    <div class="threads-list" id="catThreads"></div>
+  </div>
+
+  <!-- THREAD DETAIL VIEW -->
+  <div class="view" id="view-thread">
+    <div class="breadcrumb" id="threadBreadcrumb"></div>
+    <div class="thread-detail-layout">
+      <div class="thread-detail-main">
+        <div class="thread-question" id="threadQuestion"></div>
+        <div class="replies-section">
+          <div class="replies-header">
+            <div class="replies-count" id="repliesCount"></div>
+            <select class="form-select" style="width:auto;padding:6px 32px 6px 12px;font-size:12px" onchange="sortReplies(this.value)">
+              <option value="votes">Highest Voted</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
+          <div id="repliesList"></div>
+          <div class="reply-editor">
+            <div class="editor-title">Your Answer</div>
+            <div class="editor-toolbar">
+              <button class="toolbar-btn" onclick="insertMarkdown('**','**')"><b>B</b></button>
+              <button class="toolbar-btn" onclick="insertMarkdown('*','*')"><i>I</i></button>
+              <button class="toolbar-btn" onclick="insertMarkdown('`','`')">code</button>
+              <button class="toolbar-btn" onclick="insertMarkdown('\n```\n','\n```')">```</button>
+              <button class="toolbar-btn" onclick="insertMarkdown('- ','')">list</button>
+            </div>
+            <textarea class="editor-input" id="replyInput" placeholder="Write a helpful answer… Support markdown formatting."></textarea>
+            <div class="editor-footer">
+              <span class="editor-hint">Markdown supported · Be clear and helpful</span>
+              <button class="btn btn-primary" onclick="submitReply()">Post Answer →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="sidebar-card" id="threadSidebar"></div>
+        <div class="sidebar-card">
+          <div class="sidebar-title">Related Threads</div>
+          <div id="relatedThreads"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE VIEW -->
+  <div class="view" id="view-profile">
+    <div class="breadcrumb">
+      <a onclick="navigate('home')">Home</a>
+      <span>›</span>
+      <span>My Profile</span>
+    </div>
+    <div class="profile-banner">
+      <div class="profile-avatar-lg">B</div>
+      <div>
+        <div class="profile-name">Balaji K.</div>
+        <div class="profile-handle">@balaji · CS Engineering · 3rd Year</div>
+        <div class="profile-badges">
+          <span class="badge">🧠 Top Contributor</span>
+          <span class="badge gold">⭐ 5-Star Helper</span>
+          <span class="badge">💻 Dev Guild</span>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pstat-num">42</div><div class="pstat-label">Threads</div></div>
+        <div class="pstat"><div class="pstat-num">187</div><div class="pstat-label">Answers</div></div>
+        <div class="pstat"><div class="pstat-num">2,340</div><div class="pstat-label">Reputation</div></div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchProfileTab('threads',this)">My Threads</button>
+      <button class="tab" onclick="switchProfileTab('answers',this)">My Answers</button>
+      <button class="tab" onclick="switchProfileTab('saved',this)">Saved</button>
+    </div>
+    <div class="threads-list" id="profileContent"></div>
+  </div>
+
+  <!-- SEARCH VIEW -->
+  <div class="view" id="view-search">
+    <div class="search-results-header">
+      <h2 id="searchTitle">Search Results</h2>
+      <p id="searchSubtitle"></p>
+    </div>
+    <div class="threads-list" id="searchResults"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- NEW THREAD MODAL -->
+<div class="modal-overlay" id="newThreadModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Start a New Thread</div>
+      <button class="modal-close" onclick="closeNewThread()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-select" id="newThreadCat">
+        <option value="">Select a category…</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Title <span style="color:var(--accent-3)">*</span></label>
+      <input type="text" class="form-input" id="newThreadTitle" placeholder="Be specific — what's your question or topic?" maxlength="120">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Body</label>
+      <textarea class="form-textarea" id="newThreadBody" placeholder="Describe your question or topic in detail. Include relevant context, code snippets, or links…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags <span style="color:var(--text-muted);font-weight:400">(comma-separated)</span></label>
+      <input type="text" class="form-input" id="newThreadTags" placeholder="e.g. python, dsa, placement">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeNewThread()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewThread()">Post Thread →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA STORE
+// ═══════════════════════════════════════════
+
+const categories = [
+  { id:'academics', name:'Academics', icon:'📚', color:'rgba(108,99,255,0.15)', desc:'Courses, exams, notes, projects, and study help.', threads:68, replies:412 },
+  { id:'placements', name:'Placements', icon:'💼', color:'rgba(34,197,94,0.12)', desc:'Interview prep, company reviews, offer letters, tips.', threads:54, replies:387 },
+  { id:'dsa', name:'DSA & CP', icon:'⚡', color:'rgba(249,115,22,0.12)', desc:'Data structures, algorithms, and competitive programming.', threads:43, replies:298 },
+  { id:'projects', name:'Projects', icon:'🛠️', color:'rgba(78,205,196,0.12)', desc:'Collaborate, find teammates, and share builds.', threads:31, replies:176 },
+  { id:'events', name:'Events', icon:'🎉', color:'rgba(255,217,61,0.12)', desc:'Hackathons, fests, workshops, and college events.', threads:22, replies:143 },
+  { id:'general', name:'General', icon:'💬', color:'rgba(168,237,234,0.1)', desc:'Hostel life, clubs, campus food, and everything else.', threads:29, replies:201 },
+];
+
+const users = [
+  { name:'Aryan M.', avatar:'A', color:'#6c63ff', rep:3420 },
+  { name:'Priya S.', avatar:'P', color:'#4ecdc4', rep:2910 },
+  { name:'Balaji K.', avatar:'B', color:'#22c55e', rep:2340 },
+  { name:'Riya T.', avatar:'R', color:'#f97316', rep:1870 },
+  { name:'Kiran D.', avatar:'K', color:'#ffd93d', rep:1540 },
+];
+
+const threads = [
+  {
+    id:'t1', cat:'placements', catName:'Placements',
+    title:'How to prepare for TCS NQT in 2 weeks? — Tips & Resources',
+    excerpt:'TCS NQT is coming up and I haven\'t started preparing yet. What are the best resources and a realistic 2-week plan?',
+    body:`<p>I just saw that TCS NQT is scheduled in 2 weeks and honestly haven't started preparing at all. I have moderate knowledge of C/Python and have done basic DSA.</p>
+<p>Can anyone share:</p>
+<p>1. What topics are covered in the NQT?<br>2. Best free resources?<br>3. A realistic day-by-day plan?</p>
+<p>Any help is appreciated. I'm in 3rd year CSE.</p>`,
+    tags:['placement','tcs','nqt'], tagColors:['','green','orange'],
+    user:'Riya T.', userAvatar:'R', userColor:'#f97316',
+    votes:47, replies:12, views:384, time:'2h ago', solved:true
+  },
+  {
+    id:'t2', cat:'dsa', catName:'DSA & CP',
+    title:'Sliding Window vs Two Pointer — when to use which?',
+    excerpt:'I always confuse these two patterns. Can someone give clear examples of problems where one is better than the other?',
+    body:`<p>I've been practicing Leetcode medium problems and I keep confusing the sliding window technique with the two-pointer approach. They seem similar but produce different code.</p>
+<p>For example, for the problem "Longest Substring Without Repeating Characters", is it sliding window or two pointer?</p>
+<pre><code>// My current approach (not sure if this is sliding window or two-pointer)
+let left = 0, maxLen = 0;
+const seen = new Set();
+for (let right = 0; right < s.length; right++) {
+  while (seen.has(s[right])) { seen.delete(s[left++]); }
+  seen.add(s[right]);
+  maxLen = Math.max(maxLen, right - left + 1);
+}</code></pre>
+<p>Can someone explain the conceptual difference with examples?</p>`,
+    tags:['dsa','leetcode','algorithms'], tagColors:['teal','','green'],
+    user:'Balaji K.', userAvatar:'B', userColor:'#22c55e',
+    votes:63, replies:8, views:521, time:'5h ago', solved:true
+  },
+  {
+    id:'t3', cat:'academics', catName:'Academics',
+    title:'Good final year project ideas involving ML + Web? (CSE)',
+    excerpt:'Looking for unique project ideas that combine machine learning with a web interface for my final year project.',
+    body:`<p>I need to finalize my final year project topic in the next week. I want something that:</p>
+<p>- Uses ML (I know sklearn, basic TensorFlow)<br>- Has a proper web frontend<br>- Is original enough to stand out<br>- Is completable in 4 months</p>
+<p>I've seen the usual stuff (face recognition, sentiment analysis) and want something more unique. Any suggestions?</p>`,
+    tags:['fyp','machine-learning','webdev'], tagColors:['yellow','teal',''],
+    user:'Aryan M.', userAvatar:'A', userColor:'#6c63ff',
+    votes:38, replies:15, views:476, time:'1d ago', solved:false
+  },
+  {
+    id:'t4', cat:'events', catName:'Events',
+    title:'Smart India Hackathon 2025 — Team Formation Thread',
+    excerpt:'Looking for teammates for SIH 2025. Share your skills and find your squad here in this thread.',
+    body:`<p>SIH 2025 registrations are open. Let's use this thread for team formation — post your skills and what you're looking for.</p>
+<p><strong>My profile:</strong><br>Year: 3rd | Branch: CSE<br>Skills: React, Node.js, basic ML<br>Looking for: Backend dev, UI designer, ML specialist</p>
+<p>Drop your details below!</p>`,
+    tags:['hackathon','sih2025','team'], tagColors:['red','yellow','green'],
+    user:'Priya S.', userAvatar:'P', userColor:'#4ecdc4',
+    votes:91, replies:34, views:1240, time:'1d ago', solved:false
+  },
+  {
+    id:'t5', cat:'placements', catName:'Placements',
+    title:'Infosys InfyTQ certification worth it for placements?',
+    excerpt:'Is getting the InfyTQ Specialist certification actually helpful? Does it guarantee an interview call?',
+    body:`<p>I've been hearing a lot about InfyTQ certification. Is it actually worth spending time on, or is it just marketing?</p>
+<p>Specifically want to know: does having the Specialist level cert actually guarantee or help with getting shortlisted for Infosys?</p>`,
+    tags:['infosys','certification','placement'], tagColors:['','teal','green'],
+    user:'Kiran D.', userAvatar:'K', userColor:'#ffd93d',
+    votes:29, replies:7, views:318, time:'2d ago', solved:true
+  },
+  {
+    id:'t6', cat:'projects', catName:'Projects',
+    title:'Built a real-time collaborative code editor — looking for feedback!',
+    excerpt:'I built a browser-based collaborative code editor with live cursors using WebSockets + CodeMirror. Roast it!',
+    body:`<p>I spent the last month building a real-time collaborative code editor for my systems project. Key features:</p>
+<p>- Live multi-cursor editing (like Google Docs)<br>- Syntax highlighting for 10 languages<br>- Room-based collaboration with link sharing<br>- Built with: Node.js + WebSockets + CodeMirror 6 + React</p>
+<p>GitHub: github.com/example/collab-editor</p>
+<p>Would love feedback on the architecture and any suggestions for improvement!</p>`,
+    tags:['project','webdev','open-source'], tagColors:['teal','','orange'],
+    user:'Aryan M.', userAvatar:'A', userColor:'#6c63ff',
+    votes:74, replies:19, views:892, time:'3d ago', solved:false
+  },
+];
+
+const replies = {
+  t1: [
+    { id:'r1', user:'Aryan M.', avatar:'A', color:'#6c63ff', time:'1h ago', votes:23, accepted:true,
+      body:`<p>I cracked TCS NQT last year — here's an honest breakdown:</p>
+<p><strong>Topics (by weight):</strong><br>- Verbal (30%) — synonyms, reading comprehension, sentence completion<br>- Quantitative (30%) — percentages, probability, permutations<br>- Reasoning (20%) — series, blood relations, puzzles<br>- Coding (20%) — 1-2 easy Leetcode problems in C/Python/Java</p>
+<p><strong>2-Week Plan:</strong><br>Days 1–4: IndiaBix for quant + verbal<br>Days 5–8: PrepInsta previous year NQT papers<br>Days 9–12: Coding — Leetcode Easy (arrays, strings, loops)<br>Days 13–14: Full mock tests</p>
+<p>The coding section is easiest to score if you practice. Don't ignore it!</p>` },
+    { id:'r2', user:'Priya S.', avatar:'P', color:'#4ecdc4', time:'1.5h ago', votes:11, accepted:false,
+      body:`<p>Also add GeeksForGeeks "TCS NQT Previous Papers" section — they have actual questions from past batches. The pattern has been consistent for 3 years. Good luck! 🙌</p>` },
+  ],
+  t2: [
+    { id:'r3', user:'Kiran D.', avatar:'K', color:'#ffd93d', time:'4h ago', votes:31, accepted:true,
+      body:`<p>Great question — this confuses a lot of people. Here's the clearest way I can explain it:</p>
+<p><strong>Two Pointer:</strong> Two pointers moving toward each other (or same direction) on a <em>sorted</em> array. The key insight is that sorted order lets you make decisions — if sum is too big, move right pointer left; too small, move left pointer right.</p>
+<p><strong>Sliding Window:</strong> A window of variable or fixed size that slides through data. The window boundaries expand/shrink based on a condition. Works on unsorted data.</p>
+<p>Your code above is <strong>Sliding Window</strong> — you're maintaining a window [left, right] where all chars are unique. It's not two-pointer because the array isn't sorted and you're not making comparisons between the two ends.</p>
+<pre><code>// Classic TWO POINTER (sorted array, two-sum)
+let left = 0, right = arr.length - 1;
+while (left < right) {
+  const sum = arr[left] + arr[right];
+  if (sum === target) return [left, right];
+  else if (sum < target) left++;
+  else right--;
+}</code></pre>` },
+  ],
+  t3: [],
+  t4: [
+    { id:'r5', user:'Riya T.', avatar:'R', color:'#f97316', time:'20h ago', votes:8, accepted:false,
+      body:`<p>3rd year ECE here. Skills: Python, basic ML, IoT/Raspberry Pi. Looking for a CSE dev to join team. DM me! 🚀</p>` },
+    { id:'r6', user:'Balaji K.', avatar:'B', color:'#22c55e', time:'18h ago', votes:5, accepted:false,
+      body:`<p>3rd year CSE. Skills: React, Node.js, MongoDB. Open to any interesting problem statement. Preferably ed-tech or agriculture domain.</p>` },
+  ],
+  t5: [
+    { id:'r7', user:'Aryan M.', avatar:'A', color:'#6c63ff', time:'1d ago', votes:17, accepted:true,
+      body:`<p>Yes, it's worth it — but with nuance. The Specialist certification (>65% in both Foundation and Specialist tests) gives you direct shortlisting for Infosys SP/DSE roles without the normal recruitment process.</p>
+<p>However: the test is genuinely hard. The Specialist paper includes advanced DSA, DBMS, OS, and system design. Don't expect to clear it without solid prep. But if you do — it skips the aptitude round entirely, which is a huge advantage.</p>
+<p>Time investment: 3–4 weeks of focused study. Definitely worth it if you're targeting Infosys.</p>` },
+  ],
+  t6: [
+    { id:'r8', user:'Priya S.', avatar:'P', color:'#4ecdc4', time:'2d ago', votes:14, accepted:false,
+      body:`<p>This is really impressive for a college project! A few architecture questions:</p>
+<p>1. How are you handling conflict resolution when two users edit the same line simultaneously? Are you using OT (Operational Transformation) or CRDT?<br>2. Does the WebSocket server handle reconnection gracefully?<br>3. Is the room state persisted anywhere or is it purely in-memory?</p>
+<p>Overall, very solid. Would definitely use this. 🔥</p>` },
+    { id:'r9', user:'Kiran D.', avatar:'K', color:'#ffd93d', time:'2d ago', votes:9, accepted:false,
+      body:`<p>Add a feature where users can see each other's cursors with names, like in Figma. That alone would make this portfolio-worthy. Also consider adding a chat sidebar.</p>` },
+  ],
+};
+
+const trending = ['#placement2025','#sih2025','#dsa','#fyp','#internship','#tcs-nqt','#leetcode'];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+
+let currentView = 'home';
+let currentCategory = null;
+let currentThread = null;
+let userVotes = {}; // threadId -> 'up' | 'down'
+let replyVotes = {}; // replyId -> 'up' | 'down'
+let userThreads = [];
+
+// ═══════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════
+
+function navigate(view, param = null) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  currentView = view;
+  if (view === 'home') renderHome();
+  else if (view === 'category') renderCategory(param);
+  else if (view === 'thread') renderThread(param);
+  else if (view === 'profile') renderProfile();
+  else if (view === 'search') {}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════
+//  RENDER HOME
+// ═══════════════════════════════════════════
+
+function renderHome() {
+  // Categories
+  const grid = document.getElementById('categoriesGrid');
+  grid.innerHTML = categories.map(c => `
+    <div class="category-card" onclick="navigate('category','${c.id}')">
+      <div class="cat-icon" style="background:${c.color}">${c.icon}</div>
+      <div>
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-desc">${c.desc}</div>
+      </div>
+      <div class="cat-count">${c.threads} threads · ${c.replies} replies</div>
+    </div>
+  `).join('');
+
+  // Threads
+  renderThreadList('homeThreads', getAllThreads());
+
+  // Leaderboard
+  document.getElementById('leaderboard').innerHTML = users
+    .sort((a,b) => b.rep - a.rep)
+    .map((u, i) => `
+      <div class="leaderboard-item">
+        <span class="rank">${i+1}</span>
+        <div class="meta-avatar" style="background:${u.color};min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">${u.avatar}</div>
+        <span class="lb-name">${u.name}</span>
+        <span class="lb-points">${u.rep.toLocaleString()}</span>
+      </div>
+    `).join('');
+
+  // Trending
+  document.getElementById('trendingTags').innerHTML = trending.map(t => `
+    <div class="trending-tag" onclick="searchTag('${t}')">
+      <span class="trend-name">${t}</span>
+      <span class="trend-count">${Math.floor(Math.random()*40)+5} posts</span>
+    </div>
+  `).join('');
+}
+
+function getAllThreads() {
+  return [...threads, ...userThreads].sort((a,b) => b.votes - a.votes);
+}
+
+function renderThreadList(containerId, list) {
+  const el = document.getElementById(containerId);
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No threads yet</div><div class="empty-text">Be the first to start a discussion!</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(t => `
+    <div class="thread-item" onclick="navigate('thread','${t.id}')">
+      <div class="thread-votes">
+        <button class="vote-btn up ${(userVotes[t.id]==='up')?'active':''}" onclick="voteThread(event,'${t.id}','up')">▲</button>
+        <span class="vote-count">${t.votes + (userVotes[t.id]==='up'?1:userVotes[t.id]==='down'?-1:0)}</span>
+        <button class="vote-btn down ${(userVotes[t.id]==='down')?'active':''}" onclick="voteThread(event,'${t.id}','down')">▼</button>
+      </div>
+      <div class="thread-body">
+        <div class="thread-tags">
+          ${t.tags.map((tag,i) => `<span class="tag ${t.tagColors[i]||''}">${tag}</span>`).join('')}
+          ${t.solved ? `<span class="tag green">✓ Solved</span>` : ''}
+        </div>
+        <div class="thread-title">${t.title}</div>
+        <div class="thread-excerpt">${t.excerpt}</div>
+        <div class="thread-meta">
+          <span class="meta-item">
+            <span class="meta-avatar" style="background:${t.userColor};font-size:9px;font-weight:600">${t.userAvatar}</span>
+            ${t.user}
+          </span>
+          <span class="meta-dot">·</span>
+          <span class="meta-item">💬 ${(replies[t.id]||[]).length} replies</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-item">👁 ${t.views || Math.floor(Math.random()*500)+50}</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-item">🕐 ${t.time}</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-item">📂 ${t.catName}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterThreads(type, btn) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  let list = getAllThreads();
+  if (type === 'new') list = [...list].sort((a,b) => a.time.localeCompare(b.time));
+  else if (type === 'unanswered') list = list.filter(t => (replies[t.id]||[]).length === 0);
+  renderThreadList('homeThreads', list);
+}
+
+// ═══════════════════════════════════════════
+//  RENDER CATEGORY
+// ═══════════════════════════════════════════
+
+function renderCategory(catId) {
+  const cat = categories.find(c => c.id === catId);
+  if (!cat) return navigate('home');
+  currentCategory = cat;
+  document.getElementById('catBreadName').textContent = cat.name;
+  document.getElementById('catViewIcon').style.cssText = `background:${cat.color};width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px`;
+  document.getElementById('catViewIcon').textContent = cat.icon;
+  document.getElementById('catViewName').textContent = cat.name;
+  document.getElementById('catViewDesc').textContent = cat.desc;
+  document.getElementById('catViewThreadCount').textContent = cat.threads;
+  document.getElementById('catViewReplyCount').textContent = cat.replies;
+  const catThreads = getAllThreads().filter(t => t.cat === catId);
+  renderThreadList('catThreads', catThreads);
+}
+
+// ═══════════════════════════════════════════
+//  RENDER THREAD DETAIL
+// ═══════════════════════════════════════════
+
+function renderThread(threadId) {
+  const thread = getAllThreads().find(t => t.id === threadId);
+  if (!thread) return navigate('home');
+  currentThread = thread;
+
+  // Breadcrumb
+  document.getElementById('threadBreadcrumb').innerHTML = `
+    <a onclick="navigate('home')">Home</a>
+    <span>›</span>
+    <a onclick="navigate('category','${thread.cat}')">${thread.catName}</a>
+    <span>›</span>
+    <span style="color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${thread.title.substring(0,50)}…</span>
+  `;
+
+  // Question
+  document.getElementById('threadQuestion').innerHTML = `
+    <div class="question-header">
+      <div class="thread-tags" style="margin-bottom:12px">
+        ${thread.tags.map((tag,i) => `<span class="tag ${thread.tagColors[i]||''}">${tag}</span>`).join('')}
+        ${thread.solved ? `<span class="tag green">✓ Solved</span>` : ''}
+      </div>
+      <h1 class="question-title">${thread.title}</h1>
+      <div class="question-meta">
+        <span class="meta-item">
+          <span class="meta-avatar" style="background:${thread.userColor};min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600">${thread.userAvatar}</span>
+          ${thread.user}
+        </span>
+        <span class="meta-dot">·</span>
+        <span class="meta-item">🕐 ${thread.time}</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-item">👁 ${thread.views} views</span>
+      </div>
+    </div>
+    <div class="question-body">${thread.body}</div>
+    <div class="question-actions">
+      <button class="action-btn upvote ${(userVotes[thread.id]==='up')?'active':''}" onclick="voteThread(event,'${thread.id}','up',true)">
+        ▲ Upvote <span id="qVoteCount">${thread.votes + (userVotes[thread.id]==='up'?1:userVotes[thread.id]==='down'?-1:0)}</span>
+      </button>
+      <button class="action-btn" onclick="showToast('Thread saved!','🔖')">🔖 Save</button>
+      <button class="action-btn" onclick="showToast('Link copied!','🔗')">🔗 Share</button>
+      <button class="action-btn" onclick="showToast('Reported. Thank you.','🚩')">🚩 Report</button>
+    </div>
+  `;
+
+  // Replies
+  renderReplies(thread.id);
+
+  // Sidebar
+  document.getElementById('threadSidebar').innerHTML = `
+    <div class="sidebar-title">ℹ️ Thread Info</div>
+    <div style="font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:8px">
+      <div>📂 Category: <strong>${thread.catName}</strong></div>
+      <div>💬 Replies: <strong>${(replies[thread.id]||[]).length}</strong></div>
+      <div>▲ Votes: <strong>${thread.votes}</strong></div>
+      <div>👁 Views: <strong>${thread.views}</strong></div>
+      <div>✓ Status: <strong style="color:${thread.solved?'var(--green)':'var(--text-muted)'}">${thread.solved?'Solved':'Open'}</strong></div>
+    </div>
+  `;
+
+  // Related
+  const related = getAllThreads().filter(t => t.id !== thread.id && t.cat === thread.cat).slice(0,3);
+  document.getElementById('relatedThreads').innerHTML = related.map(t => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="navigate('thread','${t.id}')">
+      <div style="font-size:13px;font-weight:500;color:var(--text-dim);line-height:1.4;margin-bottom:3px" class="section-link">${t.title.substring(0,60)}…</div>
+      <div style="font-size:11px;color:var(--text-muted)">▲ ${t.votes} · 💬 ${(replies[t.id]||[]).length}</div>
+    </div>
+  `).join('') || `<div style="font-size:13px;color:var(--text-muted)">No related threads.</div>`;
+}
+
+function renderReplies(threadId) {
+  const list = replies[threadId] || [];
+  document.getElementById('repliesCount').textContent = `${list.length} Answer${list.length !== 1 ? 's' : ''}`;
+  if (!list.length) {
+    document.getElementById('repliesList').innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">🤔</div><div class="empty-title">No answers yet</div><div class="empty-text">Be the first to help!</div></div>`;
+    return;
+  }
+  document.getElementById('repliesList').innerHTML = list.sort((a,b) => b.votes - a.votes).map(r => `
+    <div class="reply-card ${r.accepted?'accepted':''}">
+      <div class="reply-top">
+        <div class="meta-avatar" style="background:${r.color};min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">${r.avatar}</div>
+        <strong style="font-size:13px">${r.user}</strong>
+        <span style="font-size:12px;color:var(--text-muted)">· ${r.time}</span>
+        ${r.accepted ? `<span class="accepted-badge">✓ Accepted Answer</span>` : ''}
+      </div>
+      <div class="reply-body">${r.body}</div>
+      <div class="reply-actions">
+        <button class="action-btn upvote ${(replyVotes[r.id]==='up')?'active':''}" onclick="voteReply(event,'${r.id}','${threadId}')">
+          ▲ ${r.votes + (replyVotes[r.id]==='up'?1:0)} Helpful
+        </button>
+        <button class="action-btn" onclick="showToast('Reply saved!','🔖')">🔖 Save</button>
+        <button class="action-btn" onclick="showToast('Reported.','🚩')">🚩</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function sortReplies(method) {
+  if (!currentThread) return;
+  const list = replies[currentThread.id] || [];
+  let sorted = [...list];
+  if (method === 'votes') sorted.sort((a,b) => b.votes - a.votes);
+  else if (method === 'newest') sorted.sort((a,b) => a.time.localeCompare(b.time));
+  else if (method === 'oldest') sorted.sort((a,b) => b.time.localeCompare(a.time));
+  replies[currentThread.id] = sorted;
+  renderReplies(currentThread.id);
+}
+
+// ═══════════════════════════════════════════
+//  RENDER PROFILE
+// ═══════════════════════════════════════════
+
+function renderProfile() {
+  switchProfileTab('threads', document.querySelector('#view-profile .tab'));
+}
+
+function switchProfileTab(tab, btn) {
+  document.querySelectorAll('#view-profile .tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const myThreads = getAllThreads().filter(t => t.user === 'Balaji K.' || userThreads.some(u => u.id === t.id));
+  let list = [];
+  if (tab === 'threads') list = myThreads;
+  else if (tab === 'answers') list = getAllThreads().filter(t => (replies[t.id]||[]).some(r => r.user === 'Balaji K.'));
+  else if (tab === 'saved') list = getAllThreads().slice(0,2);
+  renderThreadList('profileContent', list);
+}
+
+// ═══════════════════════════════════════════
+//  VOTING
+// ═══════════════════════════════════════════
+
+function voteThread(e, threadId, dir, refresh = false) {
+  e.stopPropagation();
+  if (userVotes[threadId] === dir) delete userVotes[threadId];
+  else userVotes[threadId] = dir;
+  if (refresh && currentThread) renderThread(currentThread.id);
+  else if (currentView === 'home') renderThreadList('homeThreads', getAllThreads());
+  else if (currentView === 'category' && currentCategory) renderCategory(currentCategory.id);
+  showToast(dir === 'up' ? 'Upvoted!' : 'Downvoted', dir === 'up' ? '▲' : '▼');
+}
+
+function voteReply(e, replyId, threadId) {
+  e.stopPropagation();
+  if (replyVotes[replyId] === 'up') delete replyVotes[replyId];
+  else replyVotes[replyId] = 'up';
+  renderReplies(threadId);
+  showToast('Marked as helpful!', '👍');
+}
+
+// ═══════════════════════════════════════════
+//  NEW THREAD MODAL
+// ═══════════════════════════════════════════
+
+function openNewThread() {
+  const sel = document.getElementById('newThreadCat');
+  sel.innerHTML = '<option value="">Select a category…</option>' + categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
+  if (currentCategory) sel.value = currentCategory.id;
+  document.getElementById('newThreadModal').classList.add('open');
+}
+function closeNewThread() {
+  document.getElementById('newThreadModal').classList.remove('open');
+  document.getElementById('newThreadTitle').value = '';
+  document.getElementById('newThreadBody').value = '';
+  document.getElementById('newThreadTags').value = '';
+}
+document.getElementById('newThreadModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeNewThread();
+});
+
+function submitNewThread() {
+  const title = document.getElementById('newThreadTitle').value.trim();
+  const catId = document.getElementById('newThreadCat').value;
+  const body = document.getElementById('newThreadBody').value.trim();
+  const tagsRaw = document.getElementById('newThreadTags').value.trim();
+  if (!title) { showToast('Please enter a title', '⚠️'); return; }
+  if (!catId) { showToast('Please select a category', '⚠️'); return; }
+  const cat = categories.find(c => c.id === catId);
+  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : ['general'];
+  const newThread = {
+    id: 't' + Date.now(),
+    cat: catId, catName: cat.name,
+    title, excerpt: body.substring(0,120) || 'No description provided.',
+    body: body ? `<p>${body.replace(/\n/g,'</p><p>')}</p>` : '<p>No description provided.</p>',
+    tags, tagColors: tags.map(() => ''),
+    user: 'Balaji K.', userAvatar: 'B', userColor: '#22c55e',
+    votes: 0, replies: 0, views: 1, time: 'just now', solved: false
+  };
+  userThreads.unshift(newThread);
+  replies[newThread.id] = [];
+  cat.threads++;
+  document.getElementById('statThreads').textContent = parseInt(document.getElementById('statThreads').textContent) + 1;
+  closeNewThread();
+  showToast('Thread posted successfully!', '🎉');
+  navigate('thread', newThread.id);
+}
+
+// ═══════════════════════════════════════════
+//  REPLY SUBMISSION
+// ═══════════════════════════════════════════
+
+function submitReply() {
+  const body = document.getElementById('replyInput').value.trim();
+  if (!body) { showToast('Please write an answer first', '⚠️'); return; }
+  if (!currentThread) return;
+  if (!replies[currentThread.id]) replies[currentThread.id] = [];
+  replies[currentThread.id].push({
+    id: 'r' + Date.now(), user: 'Balaji K.', avatar: 'B', color: '#22c55e',
+    time: 'just now', votes: 0, accepted: false,
+    body: `<p>${body.replace(/\n/g,'</p><p>')}</p>`
+  });
+  document.getElementById('replyInput').value = '';
+  renderReplies(currentThread.id);
+  showToast('Answer posted!', '✅');
+}
+
+function insertMarkdown(before, after) {
+  const ta = document.getElementById('replyInput');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const selected = ta.value.substring(start, end);
+  ta.value = ta.value.substring(0, start) + before + selected + after + ta.value.substring(end);
+  ta.focus();
+  ta.setSelectionRange(start + before.length, end + before.length);
+}
+
+// ═══════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════
+
+let searchTimeout;
+function handleSearch(query) {
+  clearTimeout(searchTimeout);
+  if (!query.trim()) { if (currentView === 'search') navigate('home'); return; }
+  searchTimeout = setTimeout(() => runSearch(query), 300);
+}
+
+function handleSearchFocus() {
+  const val = document.getElementById('searchInput').value.trim();
+  if (val) runSearch(val);
+}
+
+function runSearch(query) {
+  const q = query.toLowerCase();
+  const results = getAllThreads().filter(t =>
+    t.title.toLowerCase().includes(q) ||
+    t.excerpt.toLowerCase().includes(q) ||
+    t.tags.some(tag => tag.toLowerCase().includes(q)) ||
+    t.catName.toLowerCase().includes(q)
+  );
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-search').classList.add('active');
+  currentView = 'search';
+  document.getElementById('searchTitle').textContent = `Search: "${query}"`;
+  document.getElementById('searchSubtitle').textContent = `${results.length} result${results.length !== 1 ? 's' : ''} found`;
+  renderThreadList('searchResults', results);
+}
+
+function searchTag(tag) {
+  document.getElementById('searchInput').value = tag;
+  runSearch(tag);
+}
+
+// ═══════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════
+
+function showToast(msg, icon = 'ℹ️') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (icon === '✅' || icon === '🎉' ? ' success' : '');
+  toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+renderHome();
+</script>
+</body>
+</html>

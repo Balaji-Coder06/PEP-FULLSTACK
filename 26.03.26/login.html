@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form name="myForm">
+        <label>User Name:
+            <input id="uname" onblur="validateuname()">
+            <p id="xyz" style="color: red;"></p>
+        </label>
+        <label>Password:
+            <input type="password" id="password" onblur="validatePassword()">
+            <p id="abc" style="color: red;"></p>
+        </label>
+        <div style="display: flex; gap: 10px;">
+            <input class="submit" type="submit" value="Submit">
+            <input class="reset" type="reset" value="Reset">
+        </div>
+    </form>
+    <script>
+        function validateuname() {
+            let a = document.getElementById("uname").value.trim();
+            xyz.innerText = "";
+            if (a === "") {
+                xyz.innerText = "User Name is required";
+                return false;
+            }
+            if (a[0] >= '0' && a[0] <= '9') {
+                xyz.innerText = "Username should not start with a number";
+                return false;
+            }
+            return true;
+        }
+        function validatePassword() {
+            let password = document.getElementById("password").value;
+            abc.innerText = "";
+            if (password.length < 8 ) {
+                abc.innerText = "Minimum 8 characters required";
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
